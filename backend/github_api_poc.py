@@ -34,6 +34,10 @@ def get_repository_details(username, repo_name):
 
 # Example usage
 if __name__ == "__main__":
+    
+    # https://api.github.com/repos/ariel1985
+    # https://api.github.com/repos/ariel1985/poc
+    
     username = 'ariel1985' #"octocat"
     repo_name = 'poc' #"Hello-World"
     details = get_repository_details(username, repo_name)
