@@ -1,6 +1,33 @@
+# POCs To Do
+
+[ ] - FastAPI
+[ ] - MongoDB - Install & Connect
+[ ] - MongoDB - CRUD
+[ ] - Dockers4All
+[ ] - Docker-compose
+[ ] - Nodejs
+[ ] - Angular
+[ ] - Documentation
+
+
+
+
+
 # Github Repo Data Collector
 
+## Table of Contents
+
+- [Description](#description)
+- [Overview](#overview)
+- [Assumptions & Requirements](#assumptions--requirements)
+- [How to run the services](#how-to-run-the-services)
+
+
+## Description
+
 Microservices: Nodejs  FastAPI Angular MongoDB
+
+This project is a microservices architecture that collects data from Github repositories and stores it in MongoDB. The data is then displayed in a frontend using Angular. The frontend will query the data from the backend using Nodejs.
 
 ## Overview
 
@@ -18,15 +45,24 @@ Repositories to query are all public repositories.
 
 Project requires:
 
-- Python 3.10
-- MongoDB 
+- Python v3.10
+- MongoDB v7.0.12
+
 
 ## How to run the services
 
-1. FastAPI with
+[MongoDB](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu/)
+
+```
+sudo systemctl start mongod
+```
+
+FastAPI with python 3.10
 
 ```
 cd backend
 pip install -r requirements.txt
 uvicorn main:app --reload
 ```
+
+

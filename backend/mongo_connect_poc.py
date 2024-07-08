@@ -13,4 +13,13 @@ def connect_to_mongo():
         return client
     except pymongo.errors.ConnectionFailure as e:
         return {"error": str(e)}
+
+
+if __name__ == "__main__":
     
+    client = connect_to_mongo()
+    print(client)
+    # Output: MongoClient(host=['localhost:27017'], document_class=dict, tz_aware=False, connect=True)
+    
+    # If there is an error
+    # print(connect_to_mongo())  # Output: {'error': 'connection error'}
