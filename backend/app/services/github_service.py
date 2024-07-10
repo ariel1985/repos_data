@@ -1,15 +1,16 @@
 
-# https://docs.github.com/en/rest/search/search?apiVersion=2022-11-28#search-repositories
-# https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#list-public-repositories
-
 import requests
 
 class GitHubService:
-	def __init__(self):
-		self.base_url =  "https://api.github.com/repos"
 	
-	def fetch_repo_data(self, username, repo_name):
-		url = f"{self.base_url}/{username}/{repo_name}"
+	def __init__(self):
+		# TODO: get these from settings or env file
+		self.username = 'ariel1985' #"octocat" - 
+		self.base_url =  "https://api.github.com/repos"
+		
+
+	def fetch_repo_data(self, repo_name):
+		url = f"{self.base_url}/{self.username}/{repo_name}"
 		try:
 			response = requests.get(url, timeout=10)
 			response.raise_for_status()
@@ -22,14 +23,30 @@ class GitHubService:
 				"Description": data["description"],
 				"Forks": data["forks_count"],
 				"Languages": data["language"],
-				# Complete the dictionary based on your needs
 			}
 		except requests.RequestException as e:
 			return {"error": str(e)}
 
+	def fetch_all_repos(self):
+		url = f"https://api.github.com/users/{self.username}/repos"
+		try:
+			response = requests.get(url, timeout=10)
+			response.raise_for_status()
+			data = response.json()
+			# TODO: return only the name of repos
+			return data
+		except requests.RequestException as e:
+			return {"error": str(e)}
+
 if __name__ == "__main__":
-    username = 'ariel1985' #"octocat"
-    repo_name = 'poc' #"Hello-World"
-    service = GitHubService()
-    details = service.get_repository_details(username, repo_name)
-    
+	repo_name = 'poc' #"Hello-World"
+	service = GitHubService()
+	# details = service.get_repository_details(repo_name)
+	repos = service.fetch_all_repos()
+	if len(repos) == 0:
+		print('No repositories found')
+		exit()
+	print('Total amount of public repositories:', len(repos) )
+	print('name', repos[0]['name'])
+	print('full name', repos[0]['full_name'])
+	# print(details)
