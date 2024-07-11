@@ -1,14 +1,44 @@
-# python .gitignore
-
-venv/
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
 *.pyo
 *.pyd
-
+*.env
+env/
+venv/
 .env
 
+# FastAPI
+*.db
+instance/
 
-# IDE
-vscode/
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
 
+# Angular
+dist/
+tmp/
+
+# MongoDB
+*.lock
+*.log
+*.pid
+*.sock
+data/
+dump/
+
+# Docker
+*.env
+Dockerfile
+docker-compose.yml
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# General
+.DS_Store
+Thumbs.db
+*.log
