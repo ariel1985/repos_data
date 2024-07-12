@@ -61,8 +61,8 @@ docker-compose up --build
 Or use docker: 
 
 ```sh
-docker build -t angular-service .
-docker run -p 4200:80 angular-service
+docker build -t frontend .
+docker run -p 4200:80 frontend
 
 docker rmi $(docker images -a -q)
 docker stop $(docker ps -a -q)
@@ -87,6 +87,17 @@ uvicorn app.main:app --reload
 
 
 ### Frontend 
+
+
+Using Angular CLI to create the angular-service on the root folder:
+
+```sh
+npm install -g @angular/cli
+ng new angular-service
+ng build --configuration production
+```
+
+### Nodejs Microservice
 
 Nodejs
 
