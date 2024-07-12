@@ -57,12 +57,35 @@ Project requires:
 sudo systemctl start mongod
 ```
 
-FastAPI with python 3.10
+Backend FastAPI with python 3.10
 
 ```
 cd backend
 pip install -r requirements.txt
 uvicorn app.main:app --reload
+```
+
+
+
+### Frontend 
+
+Nodejs
+
+```
+cd frontend
+npm install
+npm install express axios
+npm start
+```
+
+
+
+Angular
+
+```
+cd frontend
+npm install
+ng serve
 ```
 
 
