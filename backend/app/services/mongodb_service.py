@@ -1,11 +1,23 @@
+import os
 import logging
 from typing import Dict, Any, Optional
 from pymongo import MongoClient
 from pymongo.errors import PyMongoError
-from ..schemas.repo import Repository
+from dotenv import load_dotenv
+from app.schemas.repo import Repository
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Get the mongo url and name from the .env file
+MONGO_URI = os.getenv("MONGODB_URI")
+DB_NAME = os.getenv("MONGODB_DB_NAME")
+
+print("checking out the mongo uri", MONGO_URI)
+print("checking out the db name", DB_NAME)
 
 class DBService:
-    def __init__(self, mongo_uri: str = 'mongodb://localhost:27017/', db_name: str = 'repos'):
+    def __init__(self, mongo_uri: str = MONGO_URI, db_name: str = DB_NAME):
         # Dependency Injection for MongoDB URI and Database Name
         self.client = MongoClient(mongo_uri)
         self.db = self.client[db_name]
@@ -18,8 +30,8 @@ class DBService:
         try:
             # Data Validation against Repository schema
             validated_data = Repository(**repo_data)
-            result = self.get_collection(collection_name).insert_one(validated_data.dict())
-            return result.inserted_id
+            insert_result = self.get_collection(collection_name).insert_one(validated_data.dict())
+            return insert_result.inserted_id
         except PyMongoError as e:
             self.logger.error("Error inserting repository data: %s", e)
             return None
@@ -96,5 +108,4 @@ if __name__ == "__main__":
     # Delete a repository detail
     result = service.delete_repo("repos", {"Name": "example-repo"})
     print(f"Deleted {result.deleted_count} repository")
-    
     

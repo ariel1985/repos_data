@@ -26,12 +26,20 @@ services:
       - mynetwork
 
   # localhost:27017
-  mongo:
-    image: mongo
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb_container
     ports:
-      - "27217:27017" # avoid conflict with local mongodb
-    networks:
-      - mynetwork
+      - "27317:27017" # Avoid port conflict with local mongodb
+    volumes:
+      - mongodb_data_container:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongoadmin
+      MONGO_INITDB_ROOT_PASSWORD: secret
+      MONGO_INITDB_DATABASE: db_repos # creates a new db
+
+volumes:
+  mongodb_data_container: {}
 
 networks:
   mynetwork:
