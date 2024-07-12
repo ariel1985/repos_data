@@ -5,7 +5,7 @@ from pydantic import BaseModel
 class RepoCreate(BaseModel):
     name: str
 
-class Repo(BaseModel):
+class Repository(BaseModel):
     id: str
     name: str
     stars: int

@@ -65,7 +65,22 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-Frontend with Angular
+
+
+### Frontend 
+
+Nodejs
+
+```
+cd frontend
+npm install
+npm install express axios
+npm start
+```
+
+
+
+Angular
 
 ```
 cd frontend

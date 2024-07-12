@@ -1,35 +1,64 @@
+import logging
+from typing import Dict, Any, Optional
 from pymongo import MongoClient
+from pymongo.errors import PyMongoError
+from ..schemas.repo import Repository
 
 class DBService:
-	def __init__(self):
-		# Connect to the MongoDB server, assuming it's running on the default port 27017
-		self.client = MongoClient('mongodb://localhost:27017/')
-		# Select the 'repos' database
-		self.db = self.client['repos']
-	
-	def get_collection(self, collection_name):
-		# Return a collection object to perform operations on
-		return self.db[collection_name]
-	
-	def insert_repo(self, collection_name, repo_data):
-		# Insert a new repository detail into the specified collection
-		return self.get_collection(collection_name).insert_one(repo_data).inserted_id
-	
-	def get_all_repos(self, collection_name):
-		# Return all repository details from the specified collection
-		return list(self.get_collection(collection_name).find())
-	
-	def get_repo(self, collection_name, query):
-		# Return a single repository detail matching the query
-		return self.get_collection(collection_name).find_one(query)
-	
-	def update_repo(self, collection_name, query, update_data):
-		# Update a repository detail matching the query
-		return self.get_collection(collection_name).update_one(query, {'$set': update_data})
-	
-	def delete_repo(self, collection_name, query):
-		# Delete a repository detail matching the query
-		return self.get_collection(collection_name).delete_one(query)
+    def __init__(self, mongo_uri: str = 'mongodb://localhost:27017/', db_name: str = 'repos'):
+        # Dependency Injection for MongoDB URI and Database Name
+        self.client = MongoClient(mongo_uri)
+        self.db = self.client[db_name]
+        self.logger = logging.getLogger(__name__)
+
+    def get_collection(self, collection_name: str):
+        return self.db[collection_name]
+
+    def insert_repo(self, collection_name: str, repo_data: Dict[str, Any]) -> Optional[str]:
+        try:
+            # Data Validation against Repository schema
+            validated_data = Repository(**repo_data)
+            result = self.get_collection(collection_name).insert_one(validated_data.dict())
+            return result.inserted_id
+        except PyMongoError as e:
+            self.logger.error("Error inserting repository data: %s", e)
+            return None
+        except ValueError as e:
+            self.logger.error("Validation error for repository data: %s", e)
+            return None
+
+    def get_all_repos(self, collection_name: str):
+        try:
+            return list(self.get_collection(collection_name).find())
+        except PyMongoError as e:
+            self.logger.error("Error fetching all repositories: %s", e)
+            return []
+
+    def get_repo(self, collection_name: str, query: Dict[str, Any]):
+        try:
+            return self.get_collection(collection_name).find_one(query)
+        except PyMongoError as e:
+            self.logger.error("Error fetching repository: %s", e)
+            return None
+
+    def update_repo(self, collection_name: str, query: Dict[str, Any], update_data: Dict[str, Any]):
+        try:
+            validated_data = Repository(**update_data)
+            result = self.get_collection(collection_name).update_one(query, {'$set': validated_data.dict()})
+            return result
+        except PyMongoError as e:
+            self.logger.error("Error updating repository: %s", e)
+            return None
+        except ValueError as e:
+            self.logger.error("Validation error for update data: %s", e)
+            return None
+
+    def delete_repo(self, collection_name: str, query: Dict[str, Any]):
+        try:
+            return self.get_collection(collection_name).delete_one(query)
+        except PyMongoError as e:
+            self.logger.error("Error deleting repository: %s", e)
+            return None
 
 if __name__ == "__main__":
     # Example usage of the DBService class
