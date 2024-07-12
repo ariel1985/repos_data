@@ -9,7 +9,7 @@
 - [x] Angular (with nginx) - Docker
 - [ ] Nodejs express + MongoDB + Github API
 - [ ] Nodejs + express Docker
-- [ ] Docker-compose
+- [x] Docker-compose
 
 
 # Github Repo Data Collector

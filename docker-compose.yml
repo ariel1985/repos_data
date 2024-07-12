@@ -10,26 +10,26 @@ services:
   #     - mynetwork
 
   # # localhost:8000/docs
-  # backend:
-  #   build: ./backend
-  #   ports:
-  #     - "8000:8000"
-  #   networks:
-  #     - mynetwork
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    networks:
+      - mynetwork
 
   # # localhost:4200
-  # frontend:
-  #   build: ./frontend
-  #   ports:
-  #     - "4200:80"
-  #   networks:
-  #     - mynetwork
+  frontend:
+    build: ./frontend
+    ports:
+      - "4200:80"
+    networks:
+      - mynetwork
 
   # localhost:27017
   mongo:
     image: mongo
     ports:
-      - "27117:27017"
+      - "27217:27017" # avoid conflict with local mongodb
     networks:
       - mynetwork
 
