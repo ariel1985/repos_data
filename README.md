@@ -1,16 +1,15 @@
 # POCs To Do
 
-[ ] - FastAPI
-[ ] - MongoDB - Install & Connect
-[ ] - MongoDB - CRUD
-[ ] - Dockers4All
-[ ] - Docker-compose
-[ ] - Nodejs
-[ ] - Angular
-[ ] - Documentation
-
-
-
+- [x] FastAPI
+- [x] FastAPI + MongoDB + Github API
+- [x] FastAPI - Docker
+- [x] MongoDB - Install & Connect (local)
+- [ ] MongoDB - Docker
+- [x] Angular
+- [x] Angular (with nginx) - Docker
+- [ ] Nodejs express + MongoDB + Github API
+- [ ] Nodejs + express Docker
+- [ ] Docker-compose
 
 
 # Github Repo Data Collector
@@ -50,6 +49,26 @@ Project requires:
 
 
 ## How to run the services
+
+### Containers
+
+Build and run the services using Docker Compose:
+
+```sh
+docker-compose up --build
+```
+
+Or use docker: 
+
+```sh
+docker build -t angular-service .
+docker run -p 4200:80 angular-service
+
+docker rmi $(docker images -a -q)
+docker stop $(docker ps -a -q)
+docker rm $(docker ps -a -q)
+```
+
 
 [MongoDB](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu/)
 
