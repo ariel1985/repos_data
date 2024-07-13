@@ -13,14 +13,21 @@ load_dotenv()
 MONGO_URI = os.getenv("MONGODB_URI")
 DB_NAME = os.getenv("MONGODB_DB_NAME")
 
-print("checking out the mongo uri", MONGO_URI)
-print("checking out the db name", DB_NAME)
 
 class DBService:
     def __init__(self, mongo_uri: str = MONGO_URI, db_name: str = DB_NAME):
         # Dependency Injection for MongoDB URI and Database Name
         self.client = MongoClient(mongo_uri)
-        self.db = self.client[db_name]
+        
+        # if db_name exists in mongodb, use it
+        if db_name in self.client.list_database_names():
+            self.db = self.client[db_name]
+            print(f"Database {db_name} found.")
+        # otherwise, create a new db with the name db_name
+        else:
+            self.db = self.client[db_name]
+            print(f"Database {db_name} not found. Creating a new one.")            
+        
         self.logger = logging.getLogger(__name__)
 
     def get_collection(self, collection_name: str):
@@ -53,18 +60,6 @@ class DBService:
             self.logger.error("Error fetching repository: %s", e)
             return None
 
-    def update_repo(self, collection_name: str, query: Dict[str, Any], update_data: Dict[str, Any]):
-        try:
-            validated_data = RepoModel(**update_data)
-            result = self.get_collection(collection_name).update_one(query, {'$set': validated_data.dict()})
-            return result
-        except PyMongoError as e:
-            self.logger.error("Error updating repository: %s", e)
-            return None
-        except ValueError as e:
-            self.logger.error("Validation error for update data: %s", e)
-            return None
-
     def delete_repo(self, collection_name: str, query: Dict[str, Any]):
         try:
             return self.get_collection(collection_name).delete_one(query)
@@ -73,39 +68,41 @@ class DBService:
             return None
 
 if __name__ == "__main__":
+    
+    repo_name = "d-repo-name"
+    print("checking out the mongo uri", MONGO_URI)
+    print("checking out the db name", DB_NAME)
+    print("checking out the repo name", repo_name)
+    
     # Example usage of the DBService class
     service = DBService()
     
-    # Insert a new repository detail
+    print("Insert a new repository detail")
     repo_data = {
-        "ID": 123,
-        "Name": "example-repo",
-        "Owner": "example-user",
-        "Stars": 100,
-        "Description": "An example repository",
-        "Forks": 50,
-        "Languages": "Python",
+        "repo_id": "123",
+        "name": repo_name,
+        "stars": 100,
+        "owner": "example-owner",
+        "description": "example-description",
+        "forks": 10,
+        "languages": ["Python", "JavaScript"],
+        "topics": ["example-topic1", "example-topic2"],
     }
     inserted_id = service.insert_repo("repos", repo_data)
     print(f"Inserted repository with ID: {inserted_id}")
     
-    # Get all repository details
+    print("Get all repository details:")
     all_repos = service.get_all_repos("repos")
     print("All repositories:")
     for repo in all_repos:
         print(repo)
     
-    # Get a specific repository detail
-    repo = service.get_repo("repos", {"Name": "example-repo"})
-    print("Repository by name:")
-    print(repo)
+    print("Get a specific repository detail:")
+    drepo = service.get_repo("repos", {"name": repo_name})
+    print("Repository by name:", repo_name)
+    print(drepo)
     
-    # Update a repository detail
-    update_data = {"Stars": 200}
-    result = service.update_repo("repos", {"Name": "example-repo"}, update_data)
-    print(f"Updated {result.modified_count} repository")
-    
-    # Delete a repository detail
-    result = service.delete_repo("repos", {"Name": "example-repo"})
+    print("Delete a repository detail:")
+    result = service.delete_repo("repos", {"name": repo_name})
     print(f"Deleted {result.deleted_count} repository")
     
