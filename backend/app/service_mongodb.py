@@ -37,8 +37,16 @@ class DBService:
         try:
             # Data Validation against Repository schema
             validated_data = RepoModel(**repo_data)
-            insert_result = self.get_collection(collection_name).insert_one(validated_data.dict())
+            
+            # if repo data exists, update it instead of inserting
+            if self.get_repo(collection_name, {"name": repo_data["name"]}):
+                return self.update_repo(collection_name, {"name": repo_data["name"]}, repo_data)
+            
+            # TODO: add a created_at timestamp to the repo data
+            insert_result = self.get_collection(collection_name).insert_one(validated_data.model_dump())
+            
             return insert_result.inserted_id
+        
         except PyMongoError as e:
             self.logger.error("Error inserting repository data: %s", e)
             return None
@@ -58,6 +66,13 @@ class DBService:
             return self.get_collection(collection_name).find_one(query)
         except PyMongoError as e:
             self.logger.error("Error fetching repository: %s", e)
+            return None
+    
+    def update_repo(self, collection_name: str, query: Dict[str, Any], update_data: Dict[str, Any]):
+        try:
+            return self.get_collection(collection_name).update_one(query, {"$set": update_data})
+        except PyMongoError as e:
+            self.logger.error("Error updating repository: %s", e)
             return None
 
     def delete_repo(self, collection_name: str, query: Dict[str, Any]):

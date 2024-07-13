@@ -65,9 +65,18 @@ graph TD;
 
 - **Frontend**: The Angular application is responsible for providing a user-friendly interface to display the repository data. It communicates with the Node.js microservice to fetch the data.
 
-- **Microservice**: The Node.js microservice retrieves the repository data from MongoDB and sends it to the frontend. If the data is not available in the database, it requests it from the FastAPI service.
+- **Microservice**: The Node.js microservice retrieves the repository data from MongoDB and sends it to the frontend. If the data is not available in the database, it requests it from the backend service.
 
-- **Backend**: The FastAPI service collects the repository data from the GitHub API and stores it in MongoDB. It acts as the intermediary between the frontend and the database.
+    Edge cases:
+    - If repo data does not exist in the database, request it from the backend service
+    - If repo data exists in the database, return it to the frontend with a limit of 10 repositories
+    - If repo data does not exist in the Github, return 404
+
+- **Backend**: The FastAPI service collects the repository data from the GitHub API and stores it in MongoDB. 
+
+    Edge cases: 
+    - If repo data alredy exists, update it instead of inserting
+    - If repo name does not exits in Github, return 404
 
 - **Database**: MongoDB serves as the central storage for repository data. It ensures efficient management and retrieval of the data.
 
