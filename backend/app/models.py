@@ -12,7 +12,7 @@ class PyObjectId(ObjectId):
             raise ValueError("Invalid objectid")
         return ObjectId(v)
 
-class Repo(BaseModel):
+class RepoModel(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     name: str
     stars: int
@@ -23,6 +23,21 @@ class Repo(BaseModel):
     topics: list[str]
 
     class Config:
-        allow_population_by_field_name = True
+        populate_by_name = True
         arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
+
+
+if __name__ == "__main__":
+    repo = RepoModel(
+        name="test-repo",
+        stars=100,
+        owner="test-owner",
+        description="test-description",
+        forks=10,
+        languages=["Python", "JavaScript"],
+        topics=["test-topic1", "test-topic2"],
+    )
+    
+    print('repo type:', type(repo))
+    print(repo)

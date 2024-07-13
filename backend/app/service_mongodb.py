@@ -4,7 +4,7 @@ from typing import Dict, Any, Optional
 from pymongo import MongoClient
 from pymongo.errors import PyMongoError
 from dotenv import load_dotenv
-from app.schemas.repo import Repository
+from .models import RepoModel
 
 # Load environment variables from .env file
 load_dotenv()
@@ -29,7 +29,7 @@ class DBService:
     def insert_repo(self, collection_name: str, repo_data: Dict[str, Any]) -> Optional[str]:
         try:
             # Data Validation against Repository schema
-            validated_data = Repository(**repo_data)
+            validated_data = RepoModel(**repo_data)
             insert_result = self.get_collection(collection_name).insert_one(validated_data.dict())
             return insert_result.inserted_id
         except PyMongoError as e:
@@ -55,7 +55,7 @@ class DBService:
 
     def update_repo(self, collection_name: str, query: Dict[str, Any], update_data: Dict[str, Any]):
         try:
-            validated_data = Repository(**update_data)
+            validated_data = RepoModel(**update_data)
             result = self.get_collection(collection_name).update_one(query, {'$set': validated_data.dict()})
             return result
         except PyMongoError as e:

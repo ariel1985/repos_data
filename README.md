@@ -9,7 +9,6 @@
 - [x] Angular
 - [x] Angular (with nginx) - Docker
 - [ ] Nodejs express + MongoDB 
-- [ ] Nodejs express + Github API
 - [ ] Nodejs + express Docker
 - [x] Docker-compose
 
@@ -71,6 +70,7 @@ docker stop $(docker ps -a -q)
 docker rm $(docker ps -a -q)
 ```
 
+### Services
 
 [MongoDB](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu/)
 

@@ -3,17 +3,13 @@ Summary: script to define the API endpoints for the repositories data.
 
 Description: This script defines the API endpoints for the repositories data. 
 It includes the following endpoints:
-
-- GET /: Returns a list of all repositories.
-- GET /{id}: Returns details for a specific repository.
-
+- A welcome endpoint that returns a welcome message.
+- An endpoint to retrieve a repository data by name from GitHub API and save it to the database.
 
 1. Create a data retrieval module which uses github api. This module should get a
 name of github repository and returns the following data : ID, Stars, Owner,
 Description, Forks, Languages, number of forks, topics.
 *NOTE: If the search result is several repositories, take the first one.
-You should find how to use Github API
-(https://docs.github.com/en/rest?apiVersion=2022-11-28)
 
 2. Data should be kept in a database.
 
@@ -23,18 +19,21 @@ collection of a specific repository’s data.
 """
 
 from fastapi import FastAPI
-from .services.github_service import GitHubService
+from fastapi import HTTPException
+from pydantic import ValidationError
 # from fastapi.middleware.cors import CORSMiddleware
-from .services.mongodb_service import DBService
-from .schemas.repo import Repository
-
+from .service_github import GitHubService
+# from .service_mongodb import DBService
+from .schemas import RepoSchema
+# from .models import RepoModel # also used for mongodb validation
 
 app = FastAPI()
 
-GHservice = GitHubService()
-DBService = DBService()
+github = GitHubService()
+# db = DBService()
 
-# Add CORS middleware
+
+# TODO: CORS middleware
 # app.add_middleware(
 #     CORSMiddleware,
 #     allow_origins=["*"],
@@ -44,53 +43,56 @@ DBService = DBService()
 # )
 
 
-
-
 @app.get("/")
-def get_all_repos():
-    
-    # TODO : Add pagination limit
-    return GHservice.fetch_all_repos()
+def welcome():
+    return {
+        "message": "Welcome to the Repositories API",
+        "docs_url": "http://localhost:8000/docs",
+    }
 
-@app.get("/{repo_name}")
-def retrieve_repo_by_name(repo_name: str):
-    """Retrieve a repository by name.
-
-    Args:
-        repo_name (str): name or id of the repository
-
-    Returns:
-        _type_: Repository: Repository data
-    """
+# Retrieve a repository data by name from GitHub API and save it to the database.
+@app.get("/{repo_name}", response_model=RepoSchema)
+def retrieve_repo_by_name(repo_name: str) -> RepoSchema:
     
-    # Fetch repo from the database
-    repo = GHservice.fetch_repo_data(repo_name)
-    if "error" in repo:
-        return {"error": "Repository not found"}
+    print ('repo_name:', repo_name)
     
-    # set the repository data
-    repo = Repository(
-        ID=repo["ID"],
-        Name=repo["Name"],
-        Owner=repo["Owner"],
-        Stars=repo["Stars"],
-        Description=repo["Description"],
-        Forks=repo["Forks"],
-        Languages=repo["Languages"],
-    )
+    data = github.fetch_repo_data(repo_name)
     
-    # Save repo to the database
+    # Raise an error if the repository is not found
+    if data.get("error"):
+        raise HTTPException(status_code=404, detail=f"Repository {repo_name} not found")
     
-    # insert the repository into the database
-    inserted_id = DBService.insert_repo("repos", repo)
+    try:
+        # Convert and validate data
+        repo_data = {
+            "id": str(data.get("id")),  # Ensure id is a string
+            "name": data.get("name") or "",  # Ensure name is a string
+            "stars": int(data.get("stargazers_count", 0)),  # Ensure stars is an integer
+            "owner": data.get("owner", {}).get("login", "unknown"),  # Assuming owner is a nested dict
+            "description": data.get("description") or "",  # Ensure description is a string
+            "forks": int(data.get("forks_count", 0)),  # Ensure forks is an integer
+            "languages": [data.get("language")] if data.get("language") else [],  # Ensure languages is a list
+            "topics": data.get("topics", []),  # Assuming topics is already a list
+        }
+        print ('repo_data:', repo_data)
+        r = RepoSchema(**repo_data)
+    except ValidationError as e:
+        # Handle validation errors, e.g., log them or return a detailed response
+        raise HTTPException(status_code=422, detail=f"Data validation error: {e.errors()}") from e
     
-    if inserted_id:
-        print(f"Inserted repository with ID: {inserted_id}")
-    else:
-        print("Failed to insert repository")
-        # TODO: log the error - use logger
+    return r
     
-    return repo
+    # # Save repo to the database
+    # # insert the repository into the database
+    # inserted_id = db.insert_repo("repos", repo)
+    
+    # if inserted_id:
+    #     print(f"Inserted repository with ID: {inserted_id}")
+    # else:
+    #     print("Failed to insert repository")
+    #     # TODO: log the error - use logger
+    
+    # return repo
 
 
 if __name__ == "__main__":

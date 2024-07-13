@@ -2,10 +2,7 @@
 
 from pydantic import BaseModel
 
-class RepoCreate(BaseModel):
-    name: str
-
-class Repository(BaseModel):
+class RepoSchema(BaseModel):
     id: str
     name: str
     stars: int

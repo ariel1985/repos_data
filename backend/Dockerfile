@@ -1,5 +1,5 @@
 # Use the official Python image
-FROM python:3.9
+FROM python:3.10
 
 # Set the working directory
 WORKDIR /usr/src/app
@@ -16,3 +16,6 @@ EXPOSE 8000
 
 # Define the command to run the app
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+# docker build -t fastapi-app .
+# docker run -d --name fastapi-app -p 8000:8000 fastapi-app
