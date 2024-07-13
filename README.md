@@ -1,14 +1,17 @@
 # POCs To Do
 
 - [x] FastAPI
-- [ ] FastAPI + MongoDB 
+- [x] FastAPI + MongoDB 
 - [x] FastAPI + Github API
 - [x] FastAPI - Docker
 - [x] MongoDB - Install & Connect (local)
 - [x] MongoDB - Docker
-- [x] Angular
+- [x] Angular 
 - [x] Angular (with nginx) - Docker
+- [x] Angular GUI (input, list, requests)
+- [x] Nodejs express
 - [ ] Nodejs express + MongoDB 
+- [ ] Nodejs express + Backend API
 - [ ] Nodejs + express Docker
 - [x] Docker-compose
 
