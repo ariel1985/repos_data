@@ -1,15 +1,16 @@
 # POCs To Do
 
 - [x] FastAPI
-- [x] FastAPI + MongoDB + Github API
+- [ ] FastAPI + MongoDB 
+- [x] FastAPI + Github API
 - [x] FastAPI - Docker
 - [x] MongoDB - Install & Connect (local)
-- [ ] MongoDB - Docker
+- [x] MongoDB - Docker
 - [x] Angular
 - [x] Angular (with nginx) - Docker
-- [ ] Nodejs express + MongoDB + Github API
+- [ ] Nodejs express + MongoDB 
 - [ ] Nodejs + express Docker
-- [ ] Docker-compose
+- [x] Docker-compose
 
 
 # Github Repo Data Collector
@@ -69,6 +70,7 @@ docker stop $(docker ps -a -q)
 docker rm $(docker ps -a -q)
 ```
 
+### Services
 
 [MongoDB](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu/)
 
