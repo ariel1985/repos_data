@@ -49,6 +49,8 @@ def welcome():
         "docs_url": "http://localhost:8000/docs",
     }
 
+# TODO: make this code more robust - optimize code
+
 # Retrieve a repository data by name from GitHub API and save it to the database.
 @app.get("/{repo_name}", response_model=RepoModel)
 def retrieve_repo_by_name(repo_name: str) -> RepoModel:
@@ -81,7 +83,6 @@ def retrieve_repo_by_name(repo_name: str) -> RepoModel:
         raise HTTPException(status_code=422, detail=f"Data validation error: {e.errors()}") from e
     
     # Save repo to the database
-    
     
     # insert the repository into the database
     inserted_id = db.insert_repo("repos", repo_data)
