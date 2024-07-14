@@ -43,19 +43,21 @@ db = DBService()
 
 
 @app.get("/")
+
 def welcome():
     return {
         "message": "Welcome to the Repositories API",
-        "docs_url": "http://localhost:8000/docs",
+        "endpoints": {
+            "retrieve_repo_by_name": "/repo/{repo_name}",
+        },
     }
 
 # TODO: make this code more robust - optimize code
 
 # Retrieve a repository data by name from GitHub API and save it to the database.
-@app.get("/{repo_name}", response_model=RepoModel)
+@app.get("/repo/{repo_name}", response_model=RepoModel)
 def retrieve_repo_by_name(repo_name: str) -> RepoModel:
     
-    print ('repo_name:', repo_name)
     # Fetch repository data from GitHub API
     data = github.fetch_repo_data(repo_name)
     
@@ -101,7 +103,4 @@ if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
 
 # Run the FastAPI application using the following command:
-
 # uvicorn app.main:app --reload
-
-# To view the API documentation, navigate to /docs

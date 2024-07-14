@@ -1,31 +1,62 @@
 const express = require('express');
+const mongoose = require('mongoose');
+const axios = require('axios');
+const repoSchema = require('./repo.model.js');
 
 const app = express();
 
-const repos = [
-    { name: 'repo1', description: 'This is repo1' },
-    { name: 'repo2', description: 'This is repo2' },
-    { name: 'repo3', description: 'This is repo3' },
-    { name: 'repo4', description: 'This is repo4' },
-    { name: 'repo5', description: 'This is repo5' },
-    { name: 'repo6', description: 'This is repo6' },
-    { name: 'repo7', description: 'This is repo7' },
-    { name: 'repo8', description: 'This is repo8' },
-    { name: 'repo9', description: 'This is repo9' },
-    { name: 'repo10', description: 'This is repo10' }
-];
+app.use(express.json());
+
+const retrieve_repo = async (repo) => { 
+    const url = `http://localhost:8000/repo/${repo}`;
+    const response = await axios.get(url);
+    return response.data;
+}
+
+// Connect to MongoDB
+mongoose.connect('mongodb://localhost/db_repos', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
+.then(() => console.log('Connected to MongoDB...'))
+    .catch(err => console.error('Could not connect to MongoDB...', err));
+
+// --- API Endpoints ---
 
 app.get('/', (req, res) => {
-  res.send('Welcome to Node.js Microservice! Go to http://localhost:3000/repos or http://localhost:3000/repo/:name');
+    res.send('Welcome to Node.js Microservice! Go to /repos or /repo/:name');
 });
 
-app.get('/repos', (req, res) => {
-  res.send('Get list of all repos from the database - limited to 10!');
+app.get('/repos', async (req, res) => {
+
+    try {
+        const repos = await repoSchema.find().sort({ stars: -1 }).limit(10);
+        res.send(repos);
+    }
+    catch (err) {
+        res.status(500).json({ message: err.message });
+        console.error('Could not connect to MongoDB...', err);
+    }
 });
 
-app.get('/repo/:name', (req, res) => {
-    // 
-    res.send('Get repo by name (initially from db, if not - from backend): ' + req.params.name);
+app.get('/repo/:name', async (req, res) => {
+    const repo = await repoSchema.find({ name: req.params.name });
+    // if repo not found in the database
+    if (repo.length === 0) {
+        console.log('Searching for repo in the backend...');
+        // try retrieving from the backend_url
+        retrieve_repo(req.params.name)
+        .then((data) => {
+            console.log('data', data);
+            res.send(data);
+        })
+        .catch((err) => {
+            console.error('Could not connect to backend', err);
+        });
+        res.status(404).send(`${req.params.name} Repository not found.`);
+    }
+    // repo found in the database
+    res.send(repo);
 });
 
 // Terminal: export PORT=3000
