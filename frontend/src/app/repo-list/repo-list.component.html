@@ -1,0 +1,7 @@
+<p>repo-list works!</p>
+
+{% comment %} show list of repos from service {% endcomment %}
+
+<ul>
+  <li *ngFor="let repo of repos">{{ repo.name }}</li>
+</ul>

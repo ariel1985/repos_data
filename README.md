@@ -6,13 +6,16 @@
 - [x] FastAPI - Docker
 - [x] MongoDB - Install & Connect (local)
 - [x] MongoDB - Docker
-- [x] Angular 
-- [x] Angular (with nginx) - Docker
-- [x] Angular GUI (input, list, requests)
 - [x] Nodejs express
-- [ ] Nodejs express + MongoDB 
-- [ ] Nodejs express + Backend API
-- [ ] Nodejs + express Docker
+- [x] Nodejs express + MongoDB 
+- [x] Nodejs axios + Backend API
+- [x] Nodejs + express Docker
+- [x] Angular (with nginx) - Docker
+- [x] Angular 
+- [ ] Angular GUI List
+- [ ] Angular GUI Details
+- [ ] Angular GUI Search
+- [ ] Angular Docker
 - [x] Docker-compose
 
 
@@ -50,7 +53,8 @@ Project requires:
 
 - Python v3.10
 - MongoDB v7.0.12
-
+- Nodejs v18.0.0
+- Angular v13.0.3
 
 ## How to run the services
 
@@ -89,10 +93,7 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-
-
 ### Frontend 
-
 
 Using Angular CLI to create the angular-service on the root folder:
 
@@ -100,6 +101,14 @@ Using Angular CLI to create the angular-service on the root folder:
 npm install -g @angular/cli
 ng new angular-service
 ng build --configuration production
+```
+
+Angular set up and run:
+
+```
+cd frontend
+npm install
+ng serve
 ```
 
 ### Nodejs Microservice
@@ -112,15 +121,4 @@ npm install
 npm install express axios
 npm start
 ```
-
-
-
-Angular
-
-```
-cd frontend
-npm install
-ng serve
-```
-
 
