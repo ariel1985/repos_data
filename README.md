@@ -9,11 +9,12 @@
 - [x] Nodejs express
 - [x] Nodejs express + MongoDB 
 - [x] Nodejs axios + Backend API
-- [ ] Nodejs + express Docker
+- [x] Nodejs + express Docker
 - [x] Angular (with nginx) - Docker
 - [x] Angular 
 - [ ] Angular GUI List
-- [ ] Angular GUI Search (button + request)
+- [ ] Angular GUI Details
+- [ ] Angular GUI Search
 - [ ] Angular Docker
 - [x] Docker-compose
 
