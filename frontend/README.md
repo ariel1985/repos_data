@@ -27,7 +27,8 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
 
 
-To upgrade Node on Linux: 
+### To upgrade Node on Linux: 
+
 ```
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 # download and install Node.js (you may need to restart the terminal)
@@ -36,4 +37,37 @@ nvm install 20
 node -v # should print `v20.15.1`
 # verifies the right NPM version is in the environment
 npm -v # should print `10.7.0`
+```
+
+
+## Some useful commands
+
+```
+# Install Angular CLI
+npm install -g @angular/cli
+
+# Create a new Angular project
+ng new my-app
+
+# Run the application
+ng serve --open
+
+# Create a new component
+ng generate component my-component
+
+# Create a new service
+ng generate service my-service
+
+# Create a new module
+ng generate module my-module
+
+# Create a new pipe
+ng generate pipe my-pipe
+
+# Create a new directive
+ng generate directive my-directive
+
+# Create a new class
+ng generate class my-class
+
 ```

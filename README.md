@@ -116,9 +116,10 @@ ng serve
 Nodejs
 
 ```
-cd frontend
+cd node_microservice
 npm install
 npm install express axios
-npm start
+npm run serve
 ```
 
+TODO: install docs for node API!!

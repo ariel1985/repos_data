@@ -1,20 +1,15 @@
-<h1> Angular Frontend Welcome! </h1>
+<div class="main-wrap"> 
 
-<p> This be the Angular app  : Inside frontend/src/app/app.component.html  </p>
+  <h1> Welcome app! </h1>
 
-<h3> TO DO: </h3>
-
-<ul>
-  <li> Show list repositories </li>
-  <app-repo-list></app-repo-list>
-  
-  <li> Show repository details </li>
   <app-repo-details></app-repo-details>
-  
-  <li> Search repositories </li>
+
   <app-repo-search></app-repo-search>
-</ul>
 
-<hr>
+  <hr>
 
-<router-outlet />
+  <app-repo-list></app-repo-list>
+
+  <router-outlet />
+
+</div>
